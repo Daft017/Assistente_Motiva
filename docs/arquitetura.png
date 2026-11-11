@@ -1,0 +1,14 @@
+[PLACEHOLDER — Substituir por imagem real: PNG, SVG, PDF ou link Excalidraw/Miro/Figma]
+
+# Fluxograma da Arquitetura — engman-copilot (Recorte B)
+
+Os 8 blocos essenciais do fluxo:
+
+1. **Entrada:** Usuário (Operador do CCO ou Técnico em Campo) envia a consulta via interface.
+2. **Guardrail de entrada:** Validação de escopo (Recorte B) e filtragem de ameaças (prompt injection, dados pessoais, jailbreak) antes de chamar o modelo.
+3. **Montagem do contexto:** Junção do system prompt, histórico da conversa, trechos recuperados via RAG na base de conhecimento e dados das ferramentas simuladas.
+4. **Chamada ao LLM:** Modelo selecionado com parâmetros definidos (temperature, max_tokens).
+5. **Decisão de ferramenta:** O modelo avalia se precisa consultar alguma tool/base (ex: consultar alarme, classificar falha ambiental, gerar OS, verificar EPI).
+6. **Execução da ferramenta:** Retorno da função simulada e reclassificação no contexto.
+7. **Guardrail de saída:** Validação final pós-geração (verificação de escopo, citação de fontes, ausência de alucinações, marcação de FATO vs HIPÓTESE, nível de confiança).
+8. **Resposta e Histórico:** Entrega formatada ao usuário e registro do turno com política de corte de contexto.
