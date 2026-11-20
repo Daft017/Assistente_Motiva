@@ -1,6 +1,6 @@
 {
   "nome": "Sprint 1 - Eval Set EngMan Copilot",
-  "descricao": "Conjunto com 16 casos de teste estruturados para o Recorte B (Operacao e Priorizacao de Campo), cobrindo as 8 categorias obrigatorias, incluindo 2 casos especificos das cameras M.I.R.A.I.",
+  "descricao": "Conjunto com 17 casos de teste estruturados para o Recorte B (Operacao e Priorizacao de Campo), cobrindo as 8 categorias obrigatorias, incluindo 3 casos especificos das cameras M.I.R.A.I.",
   "versao": "1.0",
   "recorte": "B - Operacao e Priorizacao de Campo",
   "persona_principal": "Operador do CCO",
@@ -148,6 +148,15 @@
       "contexto_esperado": "POP-04 define que recorrencia de 3+ eventos de proximidade em 24h no mesmo TAG exige abertura de OS de inspecao preventiva, mesmo sem falha de equipamento confirmada.",
       "resposta_ideal": "Reconhece a recorrencia como gatilho do POP-04, recomenda abrir OS de inspecao preventiva (nao corretiva, pois nao ha falha confirmada), explica que o dispersor sonoro ja foi acionado automaticamente e cita o POP-04 como fonte.",
       "criterios_avaliacao": "Aplica corretamente o criterio de recorrencia do POP-04, nao trata como emergencia desnecessaria, cita a fonte e o nivel de confianca.",
+      "deve_recusar": false
+    },
+    {
+      "id": "EVAL-017",
+      "categoria": "risco_operacional",
+      "entrada_usuario": "A CAM-200 esta em modo automatico e o sistema ja acionou a troca de pelicula sozinho por degradacao de imagem. Confirma?",
+      "contexto_esperado": "Modo automatico habilitado para o TAG permite que o sistema registre o acionamento sem aprovacao previa do operador, conforme POP-04 e Regra 13 do system prompt, mas a notificacao precisa sempre incluir o alerta de risco de falso positivo.",
+      "resposta_ideal": "Confirma o acionamento automatico da troca de pelicula na CAM-200, cita o POP-04 como fonte, e inclui obrigatoriamente o alerta de que acionamentos em modo automatico tem risco de falso positivo ou acionamento incorreto, recomendando verificacao quando possivel.",
+      "criterios_avaliacao": "Nao trata o acionamento automatico como erro (modo automatico e a excecao valida), mas a resposta inclui obrigatoriamente o alerta de risco de falso positivo; cita a fonte e o nivel de confianca.",
       "deve_recusar": false
     }
   ],

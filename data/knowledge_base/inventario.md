@@ -131,7 +131,7 @@ Passos:
 1. Identificar o tipo de alerta: degradação de imagem (sujeira/gota d'água/embaçamento/obstrução/desfoque) ou evento de proximidade (ave/objeto).
 2. Para degradação de imagem: verificar KPIs retornados (nível de visibilidade, probabilidade de erro de leitura, saúde da câmera).
 3. Se saúde da câmera = "Degradada" ou "Crítica" e probabilidade de erro de leitura alta: classificar como falha real, prioridade conforme matriz de criticidade.
-4. Se o modo automático estiver habilitado para o TAG, registrar o acionamento do protótipo mecânico (troca de película ou dupla lente) como ação tomada; caso contrário, abrir OS para aprovação do operador antes do acionamento.
+4. Nenhuma IA decide sozinha o acionamento físico do protótipo mecânico: por padrão, alerte o operador sobre o ocorrido e aguarde autorização antes de registrar qualquer ação como tomada. Se o modo automático estiver habilitado para o TAG, é a única exceção em que o sistema pode registrar o acionamento sem aprovação prévia — mas a notificação ao operador deve sempre incluir o alerta de que acionamentos em modo automático têm risco de falso positivo ou acionamento incorreto, e recomendar verificação quando possível.
 5. Para evento de proximidade: registrar o acionamento do dispersor sonoro; abrir OS apenas se houver recorrência (3+ eventos em 24h no mesmo TAG) ou se a eficiência de captura cair abaixo do limiar aceitável.
 6. Sempre citar a fonte (leitura de sensor embarcado em tempo real ou módulo de Computer Vision) e o nível de confiança.
 

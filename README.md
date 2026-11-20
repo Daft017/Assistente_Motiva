@@ -69,7 +69,8 @@ A arquitetura de hardware desenhada pelo grupo aposta em processar na borda (edg
 - **Sensor de proximidade anti-aves:** detecta pássaros ou objetos próximos à lente e aciona um sistema sonoro de dispersão; o engman-copilot recebe esse evento como mais um tipo de alarme e decide se precisa notificar o operador (normalmente baixa prioridade, salvo recorrência).
 - **Computer Vision de qualidade de imagem:** calcula nível de visibilidade, probabilidade de erro de leitura (ex.: placas veiculares) e causa provável (sujeira, gota d'água, embaçamento, obstrução, desfoque), alimentando os KPIs de saúde da câmera.
 - **Manutenção preditiva:** combinação dos sinais acima estima o tempo até a próxima manutenção necessária, reduzindo corretivas não planejadas.
-- **Protótipos mecânicos de autolimpeza (fora do escopo de IA desta sprint, documentados como contexto do ativo):** (1) troca automática de películas protetoras biodegradáveis via servo motor e gravidade; (2) sistema de dupla lente com câmara de limpeza, permitindo captura contínua enquanto uma das lentes é limpa. Ambos operam em modo assistido (aprovação do operador) ou automático, sempre a partir do alerta gerado pela IA — nunca por sujeira leve, só quando a degradação compromete a leitura de dado crítico.
+- **Protótipos mecânicos de autolimpeza (fora do escopo de IA desta sprint, documentados como contexto do ativo):** (1) troca automática de películas protetoras biodegradáveis via servo motor e gravidade; (2) sistema de dupla lente com câmara de limpeza, permitindo captura contínua enquanto uma das lentes é limpa.
+- **Regra de autoridade de decisão (quem aciona o quê):** nenhuma IA — o engman-copilot ou qualquer outra — decide sozinha um tratamento físico da câmera (ex.: acionar a troca de película). Por padrão, a IA apenas **alerta** o operador do CCO sobre o ocorrido; a ação só é tomada com a **autorização do operador**. A única exceção é quando o **modo automático** está habilitado para aquele TAG — aí sim a IA pode decidir e registrar o acionamento sozinha, mas a notificação ao operador precisa **sempre incluir um alerta** de que o acionamento automático carrega risco de falso positivo ou acionamento incorreto.
 
 ### Controle Remoto do M.I.R.A.I
 
@@ -110,7 +111,7 @@ Resumo: estruturado em 7 blocos (`PAPEL`, `OBJETIVO`, `ESCOPO`, `REGRAS`, `FORMA
 
 ## Eval Set
 
-16 casos cobrindo as 8 categorias obrigatórias (factual, instrucional, ambíguo, dado_inexistente, out_of_scope, jailbreak, risco_operacional, memoria_contexto) — 2 deles específicos das câmeras M.I.R.A.I: saúde da câmera e recorrência de alerta de proximidade. Cada caso traz contexto esperado, resposta ideal e critérios de avaliação verificáveis. Arquivo completo em [`/evals/sprint1_eval_set.json`](evals/sprint1_eval_set.json).
+17 casos cobrindo as 8 categorias obrigatórias (factual, instrucional, ambíguo, dado_inexistente, out_of_scope, jailbreak, risco_operacional, memoria_contexto) — 3 deles específicos das câmeras M.I.R.A.I: saúde da câmera, recorrência de alerta de proximidade e confirmação de acionamento automático com alerta de falso positivo. Cada caso traz contexto esperado, resposta ideal e critérios de avaliação verificáveis. Arquivo completo em [`/evals/sprint1_eval_set.json`](evals/sprint1_eval_set.json).
 
 ## Riscos e Mitigações
 
