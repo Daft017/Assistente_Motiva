@@ -1,13 +1,14 @@
 CHALLENGE SPRINT 01 - ENGMAN COPILOT (FIAP x MOTIVA)
 
-Grupo: [NUMERO DO GRUPO] - Turma [TURMA, ex: 1CC]
+Grupo: 03 - Turma CCPB
 Recorte escolhido: B - Operacao e Priorizacao de Campo
 
 Integrantes:
-[Nome Completo 1] - RM [000000] - [TURMA]
-[Nome Completo 2] - RM [000000] - [TURMA]
-[Nome Completo 3] - RM [000000] - [TURMA]
-[Nome Completo 4] - RM [000000] - [TURMA]
+Joao Pedro Godoy - RM 575698 - CCPB
+Pedro Almeida Pimenta - RM 575312 - CCPB
+Gabriel de Paula Santa Izabel - RM 576143 - CCPB
+Victor Hugo Astorino - RM 575927 - CCPB
+Lucas Jorge Ferreira - RM 575223 - CCPB
 
 Repositorio: https://github.com/Daft017/Assistente_Motiva
-Fluxograma: [LINK DIRETO DO FLUXOGRAMA, se hospedado fora do repositorio - ou remover esta linha se estiver em docs/arquitetura.png]
+Fluxograma: docs/arquitetura.md
