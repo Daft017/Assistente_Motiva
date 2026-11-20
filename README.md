@@ -89,7 +89,7 @@ Resumo: estruturado em 7 blocos (`PAPEL`, `OBJETIVO`, `ESCOPO`, `REGRAS`, `FORMA
 
 ## Eval Set
 
-16 casos cobrindo as 8 categorias obrigatórias (2 deles específicos das câmeras M.I.R.A.I: saúde da câmera e recorrência de alerta de proximidade) (factual, instrucional, ambíguo, dado_inexistente, out_of_scope, jailbreak, risco_operacional, memoria_contexto), cada um com contexto esperado, resposta ideal e critérios de avaliação verificáveis. Arquivo completo em [`/evals/sprint1_eval_set.json`](evals/sprint1_eval_set.json).
+16 casos cobrindo as 8 categorias obrigatórias (factual, instrucional, ambíguo, dado_inexistente, out_of_scope, jailbreak, risco_operacional, memoria_contexto) — 2 deles específicos das câmeras M.I.R.A.I: saúde da câmera e recorrência de alerta de proximidade. Cada caso traz contexto esperado, resposta ideal e critérios de avaliação verificáveis. Arquivo completo em [`/evals/sprint1_eval_set.json`](evals/sprint1_eval_set.json).
 
 ## Riscos e Mitigações
 

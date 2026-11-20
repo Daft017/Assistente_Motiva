@@ -7,7 +7,7 @@ Todos os documentos abaixo são **simulados** para fins acadêmicos do Sprint 1.
 
 ---
 
-## 1. Catálogo de Ativos (30 linhas simuladas)
+## 1. Catálogo de Ativos (32 linhas simuladas)
 
 | ID | TAG | Tipo de Ativo | Localização (km) | Fabricante | Modelo | Data Instalação | Criticidade | Status |
 |----|-----|---------------|------------------|------------|--------|-----------------|-------------|--------|
