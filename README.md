@@ -83,7 +83,7 @@ As três decisões mais importantes do fluxo: (1) o guardrail de entrada recusa 
 
 Comparação completa de modelos e vector stores em [`/docs/decisoes_tecnicas.md`](docs/decisoes_tecnicas.md).
 
-**Resumo:** GPT-4o selecionado para o MVP pelo suporte maduro a function calling e saídas estruturadas em JSON (facilita validação das 4 tools); Claude 3.5 Sonnet como alternativa válida; Llama-3.1 70B avaliado para fases futuras com infraestrutura própria. Para o vector store do RAG, Chroma foi selecionado para o protótipo (Sprints 3/4) por ser leve e não exigir infraestrutura de nuvem imediata; Pinecone e FAISS avaliados como alternativas para escala/produção local. Trade-off aceito: modelo em nuvem ganha em capacidade de raciocínio, mas exige cuidado com dados confidenciais — mitigado nesta fase pelo uso exclusivo de dados simulados.
+**Resumo:** Groq (rodando Llama 3.3 70B) selecionado como o caminho **gratuito** do MVP — sem exigir chave paga, com latência muito baixa; Claude 3.5 Sonnet e GPT-4o avaliados como alternativas pagas para um cenário de produção; Llama local via Ollama como opção totalmente offline quando a confidencialidade for crítica. Para o vector store do RAG, Chroma foi selecionado para o protótipo (Sprints 3/4) por ser leve e não exigir infraestrutura de nuvem imediata; Pinecone e FAISS avaliados como alternativas para escala/produção local. Trade-off aceito: Groq elimina a barreira de custo, mas tende a perder um pouco de qualidade de raciocínio em casos ambíguos frente aos modelos proprietários — aceitável para o MVP acadêmico.
 
 ## Base de Conhecimento
 

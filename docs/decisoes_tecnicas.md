@@ -4,16 +4,17 @@ Recorte: B — Operação e Priorização de Campo
 
 ## 1. Modelos de Linguagem Avaliados
 
-| Critério | GPT-4o (OpenAI) | Claude 3.5 Sonnet (Anthropic) | Llama-3.1 70B (local/hospedado) |
-|----------|-----------------|-------------------------------|----------------------------------|
-| Custo por token | Alto | Médio | Baixo (infra própria) |
-| Latência | Média | Média | Baixa (local) |
-| Privacidade de dados | Nuvem terceirizada | Nuvem terceirizada | Local / próprio |
-| Suporte a function calling | Excelente | Bom | Limitado |
-| Segurança e guardrails | Robustos | Robustos | Dependem da implantação |
-| Recomendação | Selecionado para MVP | Alternativa válida | Avaliado para fases futuras |
+| Critério | Claude 3.5 Sonnet (Anthropic) | GPT-4o (OpenAI) | Groq (Llama 3.3 70B) | Llama 3.1 70B local (Ollama) |
+|----------|-------------------------------|------------------|------------------------|-------------------------------|
+| Custo por token | Médio (pago) | Alto (pago) | **Gratuito** (free tier generoso) | Gratuito (infra própria) |
+| Latência | Média | Média | **Muito baixa** (inference acelerada em LPU) | Baixa, mas depende do hardware local |
+| Privacidade de dados | Nuvem terceirizada | Nuvem terceirizada | Nuvem terceirizada | Local / próprio |
+| Suporte a function calling | Bom | Excelente | Bom (via API compatível com function calling) | Limitado |
+| Segurança e guardrails | Robustos | Robustos | Robustos (herda do modelo open-weight) | Dependem da implantação |
+| Exige chave paga? | Sim | Sim | **Não** | Não |
+| Recomendação | Alternativa válida | Avaliado | **Selecionado — caminho gratuito do MVP** | Alternativa para produção local/offline |
 
-**Decisão:** GPT-4o para o MVP (Sprint 1 como projeto), por conta do suporte maduro a function calling e estrutura de saídas JSON, facilitando a validação de tools e guardrails.
+**Decisão:** Groq (rodando Llama 3.3 70B) foi selecionado como o caminho gratuito documentado do MVP, atendendo à exigência do Challenge de que nenhum integrante seja obrigado a pagar por chave de API — e ainda com latência muito baixa, o que ajuda a reduzir o tempo de resposta percebido pelo Operador do CCO. Claude 3.5 Sonnet e GPT-4o seguem avaliados como alternativas pagas para um cenário de produção com orçamento, e Llama local via Ollama como opção totalmente offline quando a confidencialidade dos dados for crítica (ver R06 em `riscos_lgpd.md`).
 
 ## 2. Vector Stores Avaliados (para RAG futuro)
 
@@ -30,7 +31,8 @@ Recorte: B — Operação e Priorização de Campo
 
 ## 3. Trade-offs Finais
 
-- **Modelo nuvem vs. local:** Modelo nuvem oferece melhor capacidade de raciocínio e function calling, mas exige cuidado com dados confidenciais (mitigado pelo uso de dados simulados no Sprint 1).
+- **Modelo gratuito (Groq) vs. modelo pago (GPT-4o/Claude):** Groq elimina a barreira de custo e entrega latência muito baixa, mas o suporte a function calling e a qualidade de raciocínio em casos ambíguos tendem a ser ligeiramente inferiores aos modelos proprietários topo de linha — aceitável para o MVP acadêmico, a reavaliar se o projeto evoluir para produção real na Motiva.
+- **Modelo nuvem vs. local:** Modelo em nuvem (Groq/GPT-4o/Claude) oferece melhor capacidade de raciocínio e manutenção simplificada, mas exige cuidado com dados confidenciais (mitigado pelo uso de dados simulados no Sprint 1); Llama local via Ollama é a opção quando a confidencialidade for inegociável.
 - **Vector store gerenciado vs. local:** Pinecone oferece menos trabalho operacional, mas custo recorrente; Chroma/FAISS são gratuitos locais, mas exigem gerenciamento próprio.
 
 ## 4. Ferramentas (Tools) Obrigatórias
