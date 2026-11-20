@@ -71,7 +71,20 @@ A arquitetura de hardware desenhada pelo grupo aposta em processar na borda (edg
 - **Manutenção preditiva:** combinação dos sinais acima estima o tempo até a próxima manutenção necessária, reduzindo corretivas não planejadas.
 - **Protótipos mecânicos de autolimpeza (fora do escopo de IA desta sprint, documentados como contexto do ativo):** (1) troca automática de películas protetoras biodegradáveis via servo motor e gravidade; (2) sistema de dupla lente com câmara de limpeza, permitindo captura contínua enquanto uma das lentes é limpa. Ambos operam em modo assistido (aprovação do operador) ou automático, sempre a partir do alerta gerado pela IA — nunca por sujeira leve, só quando a degradação compromete a leitura de dado crítico.
 
-Esse ativo é tratado pelo engman-copilot como qualquer outro alarme do Recorte B: a diferença é que a "condição ambiental" chega confirmada por sensor em vez de inferida, e a resposta inclui KPIs específicos de câmera (ver `tools/tools_spec.json`).
+### Controle Remoto do M.I.R.A.I
+
+A câmera M.I.R.A.I é projetada com uma interface de controle remoto própria — isto é uma capacidade do **hardware/firmware da câmera**, independente de qual camada de software a aciona. O engman-copilot (este assistente) pode informar ao operador que a correção remota está disponível, mas **não é o único sistema capaz de acioná-la** e, nesta sprint, não executa o comando — apenas recomenda.
+
+**Ações remotas previstas, dentro de limites seguros (sem intervenção elétrica/física):**
+- Reinício remoto seguro do módulo da câmera (power-cycle via rede/relé, não um desligamento de gabinete energizado).
+- Acionamento manual do servo motor de troca de película (Protótipo 1), fora do ciclo automático.
+- Alternância manual entre as duas lentes do sistema de dupla lente (Protótipo 2), forçando a lente limpa para a posição operacional.
+- Acionamento manual do dispersor sonoro anti-aves.
+- Reenquadramento/ajuste de foco da câmera (quando aplicável ao modelo).
+
+**Limite que não muda:** controle remoto cobre apenas comandos de software em componentes já projetados para isso. Qualquer intervenção que exija abrir o gabinete, mexer em fiação energizada ou trabalhar em altura continua seguindo o **POP-02** (desligamento seguro, EPI, profissional NR-10/NR-35) e permanece fora do escopo de qualquer automação — isso não muda com o controle remoto.
+
+Esse ativo é tratado pelo engman-copilot como qualquer outro alarme do Recorte B: a diferença é que a "condição ambiental" chega confirmada por sensor em vez de inferida, e a resposta inclui KPIs específicos de câmera e a informação de que há correção remota disponível (ver `tools/tools_spec.json`).
 
 ## Arquitetura da Solução
 
@@ -101,7 +114,7 @@ Resumo: estruturado em 7 blocos (`PAPEL`, `OBJETIVO`, `ESCOPO`, `REGRAS`, `FORMA
 
 ## Riscos e Mitigações
 
-9 riscos mapeados (alucinação, prompt injection, risco operacional, viés na priorização, LGPD, confidencialidade operacional, excesso de confiança, estouro de contexto, acionamento autônomo indevido dos protótipos M.I.R.A.I), cada um com impacto, mitigação concreta e rastreabilidade até o bloco do system prompt, a tool ou o caso de eval correspondente. Matriz completa em [`/docs/riscos_lgpd.md`](docs/riscos_lgpd.md).
+10 riscos mapeados (alucinação, prompt injection, risco operacional, viés na priorização, LGPD, confidencialidade operacional, excesso de confiança, estouro de contexto, acionamento autônomo indevido dos protótipos M.I.R.A.I, comando remoto indevido via controle remoto do M.I.R.A.I), cada um com impacto, mitigação concreta e rastreabilidade até o bloco do system prompt, a tool ou o caso de eval correspondente. Matriz completa em [`/docs/riscos_lgpd.md`](docs/riscos_lgpd.md).
 
 ## Limitações Conhecidas
 

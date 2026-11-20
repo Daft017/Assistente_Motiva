@@ -2,7 +2,7 @@
   "projeto": "engman-copilot",
   "versao": "sprint1",
   "recorte": "B - Operacao e Priorizacao de Campo",
-  "observacao": "Contrato de especificacao das tools. Nenhuma tool esta implementada nesta etapa; retornos sao mockados nas Sprints 03/04. Inclui suporte ao M.I.R.A.I (Monitoramento Inteligente com Recuperacao Autonoma de Imagem) -- cameras inteligentes com sensores embarcados de neblina e proximidade, modulo de Computer Vision de qualidade de imagem e protótipos mecânicos de autolimpeza (troca de pelicula e dupla lente).",
+  "observacao": "Contrato de especificacao das tools. Nenhuma tool esta implementada nesta etapa; retornos sao mockados nas Sprints 03/04. Inclui suporte ao M.I.R.A.I (Monitoramento Inteligente com Recuperacao Autonoma de Imagem) -- cameras inteligentes com sensores embarcados de neblina e proximidade, modulo de Computer Vision de qualidade de imagem, interface de controle remoto do proprio hardware (reinicio seguro, troca manual de pelicula/lente, dispersor sonoro, foco) e protótipos mecânicos de autolimpeza (troca de pelicula e dupla lente). O controle remoto e um recurso da camera M.I.R.A.I, nao deste assistente: a tool classificar_falha_ambiental apenas informa ao operador quais acoes remotas estao disponiveis, sem executa-las.",
   "tools": [
     {
       "name": "consultar_historico_tag",
@@ -99,6 +99,14 @@
           "acionar_dispersor_sonoro": {
             "type": "boolean",
             "description": "True quando leitura_sensor_proximidade indicar ave proxima e o sistema sonoro anti-aves deve ser acionado."
+          },
+          "correcao_remota_disponivel": {
+            "type": "array",
+            "description": "Lista informativa das acoes de controle remoto que o HARDWARE da camera M.I.R.A.I permite executar para este caso (recurso da camera, nao executado por esta tool nem por este assistente). O assistente apenas informa a opcao ao operador.",
+            "items": {
+              "type": "string",
+              "enum": ["reiniciar_modulo", "acionar_troca_pelicula_manual", "alternar_lente_manual", "acionar_dispersor_sonoro_manual", "ajustar_foco"]
+            }
           }
         }
       }
