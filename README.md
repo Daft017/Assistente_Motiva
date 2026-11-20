@@ -1,6 +1,8 @@
-# engman-copilot
+# engman-copilot · M.I.R.A.I
 
 Assistente de Inteligência Artificial Generativa para Engenharia de Manutenção — Motiva Rodovias (Programas PRIME e MIND)
+
+**M.I.R.A.I** (Monitoramento Inteligente com Recuperação Autônoma de Imagem) é o ativo-piloto do engman-copilot: câmeras de CFTV equipadas com sensores embarcados (neblina, proximidade de aves/objetos) e um módulo de Computer Vision que monitora a própria qualidade de captura, prevê degradação e aciona manutenção — corretiva, preventiva ou autônoma (protótipos de troca de película e dupla lente com autolimpeza). O engman-copilot é a camada de IA que recebe os alertas gerados por essas câmeras (e pelos demais ativos ITS da via), confirma com a base de conhecimento, classifica, prioriza e organiza tudo para o Operador do CCO — funcionando como uma espécie de API de gestão de alarmes entre o hardware de campo e a decisão humana.
 
 ## Contexto Acadêmico
 
@@ -20,6 +22,8 @@ O CCO (Centro de Controle Operacional) da Motiva recebe dezenas de alarmes simul
 
 Isso gera dois riscos opostos e caros: alarme falso tratado como real aciona deslocamento desnecessário de técnico em campo (custo operacional); alarme real descartado como ambiental atrasa o atendimento e aumenta o risco à segurança viária. Com a Motiva operando mais de 5 mil km de rodovias e cerca de 2 milhões de veículos pedagiados por dia, a escala do problema torna inviável a triagem manual sem apoio de IA.
 
+Um caso específico e recorrente motivou o recorte das câmeras M.I.R.A.I: hoje a manutenção de lente é manual — alguém precisa se deslocar até o ponto para limpar a câmera — e chuva, poeira e teias de aranha sujam a lente logo depois da limpeza. Imagem degradada compromete diretamente a leitura de placas (OCR/LPR) e a captura de evidências em caso de incidente. A proposta do grupo é que a própria câmera monitore a qualidade da sua captura (nível de visibilidade, probabilidade de erro de leitura, saúde da câmera) e emita o alerta de manutenção — o engman-copilot recebe esse alerta, confirma com sensores dedicados (neblina, proximidade) e decide a prioridade e ação, em vez de a IA precisar inferir tudo a partir da imagem.
+
 ## Recorte Escolhido: Recorte B — Operação e Priorização de Campo
 
 **Justificativa técnica:** O Recorte B foca no suporte ao operador do CCO (Centro de Controle Operacional) e ao coordenador na triagem de alarmes em tempo real, diferenciando falhas reais de ativos de condições ambientais (chuva, cerração, glare), definindo prioridades e gerando ordens de serviço (OS). Essa escolha está diretamente alinhada com a operação rodoviária da Motiva, onde a rápida distinção entre falha de equipamento e interferência ambiental impacta a segurança dos usuários e a disponibilidade da via.
@@ -34,6 +38,7 @@ Isso gera dois riscos opostos e caros: alarme falso tratado como real aciona des
 **Dentro do escopo:**
 - Triagem de alarmes em tempo real no CCO
 - Classificação de falha real vs. condição ambiental (chuva, cerração, glare)
+- Leitura de alertas de câmeras M.I.R.A.I (saúde da câmera, probabilidade de erro de leitura, sensor de proximidade de aves/objetos) e decisão sobre ação recomendada
 - Definição de prioridade de atendimento
 - Geração de texto de Ordem de Serviço (OS)
 - Consulta a histórico de falhas por TAG (dentro da base de conhecimento)
@@ -48,11 +53,23 @@ Isso gera dois riscos opostos e caros: alarme falso tratado como real aciona des
 - Inventar números de série, TAGs, modelos, normas ou históricos
 - Tratar dados pessoais em desacordo com a LGPD
 
+## Ativo-Piloto: Câmeras M.I.R.A.I
+
+A arquitetura de hardware desenhada pelo grupo aposta em processar na borda (edge) o que for barato e repetitivo, e reservar o LLM para a parte que exige julgamento — alinhado ao critério de "Eficiência Computacional" do briefing da Motiva (Tema 2.1).
+
+- **Sensor dedicado de neblina/umidade:** circuito embarcado na própria câmera confirma a condição ambiental antes de qualquer chamada à IA — o modelo não precisa "adivinhar" olhando a imagem, só decide classificação e prioridade com base num dado já confirmado.
+- **Sensor de proximidade anti-aves:** detecta pássaros ou objetos próximos à lente e aciona um sistema sonoro de dispersão; o engman-copilot recebe esse evento como mais um tipo de alarme e decide se precisa notificar o operador (normalmente baixa prioridade, salvo recorrência).
+- **Computer Vision de qualidade de imagem:** calcula nível de visibilidade, probabilidade de erro de leitura (ex.: placas veiculares) e causa provável (sujeira, gota d'água, embaçamento, obstrução, desfoque), alimentando os KPIs de saúde da câmera.
+- **Manutenção preditiva:** combinação dos sinais acima estima o tempo até a próxima manutenção necessária, reduzindo corretivas não planejadas.
+- **Protótipos mecânicos de autolimpeza (fora do escopo de IA desta sprint, documentados como contexto do ativo):** (1) troca automática de películas protetoras biodegradáveis via servo motor e gravidade; (2) sistema de dupla lente com câmara de limpeza, permitindo captura contínua enquanto uma das lentes é limpa. Ambos operam em modo assistido (aprovação do operador) ou automático, sempre a partir do alerta gerado pela IA — nunca por sujeira leve, só quando a degradação compromete a leitura de dado crítico.
+
+Esse ativo é tratado pelo engman-copilot como qualquer outro alarme do Recorte B: a diferença é que a "condição ambiental" chega confirmada por sensor em vez de inferida, e a resposta inclui KPIs específicos de câmera (ver `tools/tools_spec.json`).
+
 ## Arquitetura da Solução
 
 Fluxo completo com os 8 blocos essenciais (entrada → guardrail de entrada → montagem de contexto com RAG → chamada ao LLM → decisão de tool → execução de tool → guardrail de saída → resposta + histórico), com diagrama Mermaid e descrição bloco a bloco em [`/docs/arquitetura.md`](docs/arquitetura.md).
 
-As duas decisões mais importantes do fluxo: (1) o guardrail de entrada recusa pedidos fora de escopo, jailbreak ou com dado pessoal **antes** de chamar o modelo, reduzindo custo e superfície de ataque; (2) o guardrail de saída pode forçar uma nova geração se a resposta não citar fonte, não distinguir FATO de HIPÓTESE ou não trouxer nível de confiança — nenhuma alucinação sai sem passar por essa checagem.
+As três decisões mais importantes do fluxo: (1) o guardrail de entrada recusa pedidos fora de escopo, jailbreak ou com dado pessoal **antes** de chamar o modelo, reduzindo custo e superfície de ataque; (2) condições ambientais das câmeras M.I.R.A.I (neblina, proximidade) são confirmadas por sensor embarcado na borda, não inferidas pela IA a partir da imagem; (3) o guardrail de saída pode forçar uma nova geração se a resposta não citar fonte, não distinguir FATO de HIPÓTESE ou não trouxer nível de confiança — nenhuma alucinação sai sem passar por essa checagem.
 
 ## Stack e Justificativa Técnica
 
@@ -62,7 +79,7 @@ Comparação completa de modelos e vector stores em [`/docs/decisoes_tecnicas.md
 
 ## Base de Conhecimento
 
-Inventário completo (10 categorias de documento, todos simulados exceto glossário e normas) em [`/data/knowledge_base/inventario.md`](data/knowledge_base/inventario.md): catálogo de 30 ativos, plano de manutenção preventiva, histórico de falhas do FSM (50+ registros), 3 POPs, fichas técnicas, matriz de criticidade, glossário e normas NR-10/NR-35.
+Inventário completo (10 categorias de documento, todos simulados exceto glossário e normas) em [`/data/knowledge_base/inventario.md`](data/knowledge_base/inventario.md): catálogo de 32 ativos (incluindo 2 câmeras M.I.R.A.I), plano de manutenção preventiva, histórico de falhas do FSM (50+ registros), 4 POPs (incluindo resposta a alertas M.I.R.A.I), fichas técnicas, matriz de criticidade, glossário e normas NR-10/NR-35.
 
 **Uso no RAG:** chunks de 512 tokens com sobreposição de 50, metadados por TAG/tipo de alarme/localização/data/criticidade, recuperação por busca híbrida (semântica + palavra-chave por TAG) — justificativa detalhada no próprio inventário.
 
@@ -72,11 +89,11 @@ Resumo: estruturado em 7 blocos (`PAPEL`, `OBJETIVO`, `ESCOPO`, `REGRAS`, `FORMA
 
 ## Eval Set
 
-14 casos cobrindo as 8 categorias obrigatórias (factual, instrucional, ambíguo, dado_inexistente, out_of_scope, jailbreak, risco_operacional, memoria_contexto), cada um com contexto esperado, resposta ideal e critérios de avaliação verificáveis. Arquivo completo em [`/evals/sprint1_eval_set.json`](evals/sprint1_eval_set.json).
+16 casos cobrindo as 8 categorias obrigatórias (2 deles específicos das câmeras M.I.R.A.I: saúde da câmera e recorrência de alerta de proximidade) (factual, instrucional, ambíguo, dado_inexistente, out_of_scope, jailbreak, risco_operacional, memoria_contexto), cada um com contexto esperado, resposta ideal e critérios de avaliação verificáveis. Arquivo completo em [`/evals/sprint1_eval_set.json`](evals/sprint1_eval_set.json).
 
 ## Riscos e Mitigações
 
-8 riscos mapeados (alucinação, prompt injection, risco operacional, viés na priorização, LGPD, confidencialidade operacional, excesso de confiança, estouro de contexto), cada um com impacto, mitigação concreta e rastreabilidade até o bloco do system prompt, a tool ou o caso de eval correspondente. Matriz completa em [`/docs/riscos_lgpd.md`](docs/riscos_lgpd.md).
+9 riscos mapeados (alucinação, prompt injection, risco operacional, viés na priorização, LGPD, confidencialidade operacional, excesso de confiança, estouro de contexto, acionamento autônomo indevido dos protótipos M.I.R.A.I), cada um com impacto, mitigação concreta e rastreabilidade até o bloco do system prompt, a tool ou o caso de eval correspondente. Matriz completa em [`/docs/riscos_lgpd.md`](docs/riscos_lgpd.md).
 
 ## Limitações Conhecidas
 
@@ -99,7 +116,7 @@ Contrato completo em [`/tools/tools_spec.json`](tools/tools_spec.json). Nenhuma 
 | Tool | O que faz | Parâmetros principais |
 |------|-----------|------------------------|
 | `consultar_historico_tag` | Busca o histórico de falhas/manutenções de um ativo na base de conhecimento, sem inventar dados | `tag`, `limite_registros` |
-| `classificar_falha_ambiental` | Classifica um alarme como falha real, ambiental/indeterminado ou sem informação | `tag`, `tipo_alarme`, `condicao_ambiental_informada` |
+| `classificar_falha_ambiental` | Classifica um alarme como falha real, ambiental/indeterminado ou sem informação; para câmeras M.I.R.A.I, recebe leitura dos sensores embarcados (neblina, proximidade) e métricas de Computer Vision, retornando também os KPIs de saúde da câmera | `tag`, `tipo_alarme`, `condicao_ambiental_informada`, `leitura_sensor_neblina`, `leitura_sensor_proximidade`, `metricas_visao_computacional` |
 | `verificar_seguranca_epi` | Verifica se há POP cadastrado e os EPIs obrigatórios antes de liberar orientação de campo | `tipo_intervencao`, `ativo_energizado` |
 | `gerar_ordem_servico` | Monta o texto estruturado da OS com os campos obrigatórios do POP-03 | `tag`, `localizacao_km`, `tipo_intervencao`, `prioridade` |
 

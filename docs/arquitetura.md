@@ -50,4 +50,5 @@ flowchart TD
 ## Decisões mais importantes do fluxo
 
 1. **Guardrail de entrada antes do LLM:** recusas por escopo, jailbreak ou dado pessoal são resolvidas sem sequer chamar o modelo — reduz custo, latência e superfície de ataque de prompt injection.
-2. **Guardrail de saída pode reenviar ao LLM:** se a resposta gerada falhar em qualquer checagem (ex: não citou fonte, não marcou FATO vs HIPÓTESE), o fluxo não entrega a resposta ao usuário — força nova geração até passar nas checagens, evitando que alucinação chegue ao operador.
+2. **Pré-filtragem por sensor embarcado (edge) para câmeras M.I.R.A.I:** a leitura de neblina e de proximidade é feita por circuito dedicado na própria câmera, não pela IA interpretando a imagem — o LLM só recebe o dado já confirmado (bloco 3) e decide classificação/prioridade/ação. Isso segue o critério de "Eficiência Computacional" do Tema 2.1 do briefing (processar na borda o que for barato e repetitivo, reservar o modelo para o que exige julgamento).
+3. **Guardrail de saída pode reenviar ao LLM:** se a resposta gerada falhar em qualquer checagem (ex: não citou fonte, não marcou FATO vs HIPÓTESE), o fluxo não entrega a resposta ao usuário — força nova geração até passar nas checagens, evitando que alucinação chegue ao operador.

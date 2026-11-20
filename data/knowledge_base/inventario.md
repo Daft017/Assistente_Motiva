@@ -41,6 +41,10 @@ Todos os documentos abaixo são **simulados** para fins acadêmicos do Sprint 1.
 | 28 | CCTV-031 | Câmera CCTV analógica | 9,7 | Axis | M1065-LW | 2022-11-05 | Baixa | Inativo |
 | 29 | SRL-001 | Sirene sonora | 15,2 | Federal Signal | VS4-12 | 2023-03-01 | Média | Ativo |
 | 30 | SRL-008 | Sirene sonora | 22,4 | Federal Signal | VS4-12 | 2023-03-05 | Média | Ativo |
+| 31 | CAM-200 | Câmera inteligente M.I.R.A.I | 20,0 | Motiva/FIAP (protótipo) | M.I.R.A.I v1 | 2026-02-01 | Alta | Ativo |
+| 32 | CAM-215 | Câmera inteligente M.I.R.A.I | 27,4 | Motiva/FIAP (protótipo) | M.I.R.A.I v1 | 2026-02-10 | Alta | Ativo |
+
+> **Nota:** CAM-200 e CAM-215 são câmeras inteligentes M.I.R.A.I (Monitoramento Inteligente com Recuperação Autônoma de Imagem) — equipadas com sensor embarcado de neblina/umidade, sensor de proximidade anti-aves com dispersor sonoro, módulo de Computer Vision de qualidade de imagem e protótipo mecânico de autolimpeza (troca de película ou dupla lente, conforme unidade). TAGs e dados simulados para fins acadêmicos.
 
 ---
 
@@ -75,12 +79,14 @@ Resumo dos registros simulados (amostra de 10 dos 50+):
 | 2026-03-18 | ENR-041 | Bateria do nobreak fraco | km 14,7 | Troca de bateria | Resolvido |
 | 2026-04-02 | CAM-078 | Perda de controle PTZ | km 25,8 | Reconfiguração de IP | Resolvido |
 | 2026-04-15 | SEN-203 | Contagem duplicada de veículos | km 30,1 | Atualização de firmware | Resolvido |
+| 2026-05-02 | CAM-200 | Degradação de imagem por sujeira (lente) | km 20,0 | Acionamento automático de troca de película | Resolvido |
+| 2026-05-10 | CAM-215 | Alerta de proximidade recorrente (ave) | km 27,4 | Monitoramento; sem intervenção física necessária | Resolvido |
 
 *Os 40+ registros restantes seguem o mesmo padrão e estão armazenados no arquivo simulado `fsm_historico_2026.json` (não entregue neste sprint).*
 
 ---
 
-## 4. POPs - Procedimentos Operacionais (3)
+## 4. POPs - Procedimentos Operacionais (4)
 
 ### POP-01 — Triagem de Alarmes no CCO
 Objetivo: Padronizar a recepção e classificação de alarmes recebidos pelo operador do CCO.
@@ -119,6 +125,16 @@ Campos obrigatórios:
 - Data e hora de abertura e fechamento
 - Assinatura do responsável
 
+### POP-04 — Resposta a Alertas de Câmera M.I.R.A.I
+Objetivo: Padronizar a reação do CCO a alertas gerados pela própria câmera inteligente (saúde da imagem e sensor de proximidade).
+Passos:
+1. Identificar o tipo de alerta: degradação de imagem (sujeira/gota d'água/embaçamento/obstrução/desfoque) ou evento de proximidade (ave/objeto).
+2. Para degradação de imagem: verificar KPIs retornados (nível de visibilidade, probabilidade de erro de leitura, saúde da câmera).
+3. Se saúde da câmera = "Degradada" ou "Crítica" e probabilidade de erro de leitura alta: classificar como falha real, prioridade conforme matriz de criticidade.
+4. Se o modo automático estiver habilitado para o TAG, registrar o acionamento do protótipo mecânico (troca de película ou dupla lente) como ação tomada; caso contrário, abrir OS para aprovação do operador antes do acionamento.
+5. Para evento de proximidade: registrar o acionamento do dispersor sonoro; abrir OS apenas se houver recorrência (3+ eventos em 24h no mesmo TAG) ou se a eficiência de captura cair abaixo do limiar aceitável.
+6. Sempre citar a fonte (leitura de sensor embarcado em tempo real ou módulo de Computer Vision) e o nível de confiança.
+
 ---
 
 ## 5. Fichas Técnicas dos Equipamentos (seleção)
@@ -128,6 +144,7 @@ Campos obrigatórios:
 - **Painel Luminator V8100:** LED matriz, comunicação via fibra óptica, pixels individuais substituíveis.
 - **Gabinete Schneider Prisma Plus:** IP65, ventilação forçada, disjuntores termomagnéticos.
 - **Nobreak APC Smart-UPS 1500:** Autonomia média 15 min, bateria selada, teste automático semanal.
+- **Câmera M.I.R.A.I v1 (protótipo Motiva/FIAP):** Câmera CFTV base + circuito embarcado de sensor de neblina/umidade, sensor de proximidade com dispersor sonoro anti-aves, módulo de Computer Vision para cálculo de nível de visibilidade e probabilidade de erro de leitura, e protótipo mecânico de autolimpeza (troca automática de película biodegradável via servo motor, ou dupla lente com câmara de limpeza e redundância óptica — permite captura contínua durante a limpeza). KPIs monitorados: Nível de Visibilidade, Probabilidade de Erro, Saúde da Câmera, Tempo Estimado para Manutenção, Eficiência de Captura.
 
 ---
 

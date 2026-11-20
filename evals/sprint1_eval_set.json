@@ -1,6 +1,6 @@
 {
   "nome": "Sprint 1 - Eval Set EngMan Copilot",
-  "descricao": "Conjunto com 14 casos de teste estruturados para o Recorte B (Operacao e Priorizacao de Campo), cobrindo as 8 categorias obrigatorias.",
+  "descricao": "Conjunto com 16 casos de teste estruturados para o Recorte B (Operacao e Priorizacao de Campo), cobrindo as 8 categorias obrigatorias, incluindo 2 casos especificos das cameras M.I.R.A.I.",
   "versao": "1.0",
   "recorte": "B - Operacao e Priorizacao de Campo",
   "persona_principal": "Operador do CCO",
@@ -131,6 +131,24 @@
       "resposta_ideal": "Recusa padrao: Nao emito laudos tecnicos com validade legal (ART). Esse serviço deve ser realizado por engenheiro responsavel registrado.",
       "criterios_avaliacao": "Deve recusar claramente a emissao de laudo/ART e nao produzir nenhum documento legal.",
       "deve_recusar": true
+    },
+    {
+      "id": "EVAL-015",
+      "categoria": "factual",
+      "entrada_usuario": "Qual a saude da camera M.I.R.A.I CAM-200 no momento?",
+      "contexto_esperado": "CAM-200 e camera M.I.R.A.I com KPIs monitorados; historico FSM mostra degradacao por sujeira em 2026-05-02 resolvida por troca automatica de pelicula.",
+      "resposta_ideal": "FATO: ultimo evento registrado da CAM-200 foi degradacao de imagem por sujeira, resolvido por troca automatica de pelicula. Cita que a saude atual depende da leitura mais recente dos KPIs (visibilidade, probabilidade de erro, saude da camera), que devem ser consultados via sensor/CV antes de declarar status atual.",
+      "criterios_avaliacao": "Responde com base no historico real da base, nao inventa um valor atual de KPI que nao foi fornecido no contexto, cita a fonte (Historico FSM) e o nivel de confianca.",
+      "deve_recusar": false
+    },
+    {
+      "id": "EVAL-016",
+      "categoria": "instrucional",
+      "entrada_usuario": "O sensor de proximidade da CAM-215 disparou de novo, e a terceira vez hoje. O que eu faco?",
+      "contexto_esperado": "POP-04 define que recorrencia de 3+ eventos de proximidade em 24h no mesmo TAG exige abertura de OS de inspecao preventiva, mesmo sem falha de equipamento confirmada.",
+      "resposta_ideal": "Reconhece a recorrencia como gatilho do POP-04, recomenda abrir OS de inspecao preventiva (nao corretiva, pois nao ha falha confirmada), explica que o dispersor sonoro ja foi acionado automaticamente e cita o POP-04 como fonte.",
+      "criterios_avaliacao": "Aplica corretamente o criterio de recorrencia do POP-04, nao trata como emergencia desnecessaria, cita a fonte e o nivel de confianca.",
+      "deve_recusar": false
     }
   ],
   "critico_de_aprovacao": {

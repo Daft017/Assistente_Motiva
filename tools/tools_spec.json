@@ -2,7 +2,7 @@
   "projeto": "engman-copilot",
   "versao": "sprint1",
   "recorte": "B - Operacao e Priorizacao de Campo",
-  "observacao": "Contrato de especificacao das tools. Nenhuma tool esta implementada nesta etapa; retornos sao mockados nas Sprints 03/04.",
+  "observacao": "Contrato de especificacao das tools. Nenhuma tool esta implementada nesta etapa; retornos sao mockados nas Sprints 03/04. Inclui suporte ao M.I.R.A.I (Monitoramento Inteligente com Recuperacao Autonoma de Imagem) -- cameras inteligentes com sensores embarcados de neblina e proximidade, modulo de Computer Vision de qualidade de imagem e protótipos mecânicos de autolimpeza (troca de pelicula e dupla lente).",
   "tools": [
     {
       "name": "consultar_historico_tag",
@@ -44,7 +44,7 @@
     },
     {
       "name": "classificar_falha_ambiental",
-      "description": "Avalia um alarme recebido no CCO e classifica se e provavel falha real do ativo, condicao ambiental (chuva, cerracao, glare) ou indeterminado, cruzando o tipo de alarme com condicoes ambientais registradas e o historico do TAG.",
+      "description": "Avalia um alarme recebido no CCO e classifica se e provavel falha real do ativo, condicao ambiental (chuva, cerracao, glare) ou indeterminado. Para cameras M.I.R.A.I (Monitoramento Inteligente com Recuperacao Autonoma de Imagem), recebe tambem as leituras dos sensores embarcados (neblina, proximidade de aves/objetos) e as metricas de Computer Vision, evitando que a IA precise 'adivinhar' a condicao ambiental a partir da imagem — o sensor dedicado ja confirma o dado, a IA so decide a classificacao e a acao.",
       "parameters": {
         "type": "object",
         "properties": {
@@ -54,12 +54,29 @@
           },
           "tipo_alarme": {
             "type": "string",
-            "description": "Descricao do alarme recebido, ex: perda de video, leitura inconsistente."
+            "description": "Descricao do alarme recebido, ex: perda de video, leitura inconsistente, degradacao de imagem."
           },
           "condicao_ambiental_informada": {
             "type": "string",
             "enum": ["chuva", "cerracao", "glare", "nenhuma", "desconhecida"],
             "description": "Condicao ambiental relatada no momento do alarme, se houver."
+          },
+          "leitura_sensor_neblina": {
+            "type": "boolean",
+            "description": "Leitura do circuito embarcado dedicado de deteccao de neblina/umidade da camera (quando o ativo for camera M.I.R.A.I), pre-filtrando a condicao ambiental antes de acionar a IA."
+          },
+          "leitura_sensor_proximidade": {
+            "type": "boolean",
+            "description": "Leitura do sensor de proximidade embarcado que detecta ave ou objeto proximo a lente (camera M.I.R.A.I)."
+          },
+          "metricas_visao_computacional": {
+            "type": "object",
+            "description": "Saida do modulo de Computer Vision de analise de qualidade de imagem, quando aplicavel.",
+            "properties": {
+              "nivel_visibilidade": { "type": "number", "description": "Percentual de 0 a 100 da nitidez/visibilidade da imagem." },
+              "probabilidade_erro_leitura": { "type": "number", "description": "Percentual de 0 a 100 de chance de falha na leitura de placas/eventos criticos." },
+              "causa_provavel": { "type": "string", "enum": ["sujeira", "gota_de_agua", "embacamento", "obstrucao", "desfoque", "nenhuma"] }
+            }
           }
         },
         "required": ["tag", "tipo_alarme"]
@@ -69,7 +86,20 @@
         "properties": {
           "classificacao": { "type": "string", "enum": ["falha_real", "ambiental_indeterminado", "sem_informacao"] },
           "justificativa": { "type": "string" },
-          "prioridade_sugerida": { "type": "string", "enum": ["Alta", "Media", "Baixa"] }
+          "prioridade_sugerida": { "type": "string", "enum": ["Alta", "Media", "Baixa"] },
+          "kpis_camera": {
+            "type": "object",
+            "description": "Preenchido apenas quando o ativo for camera M.I.R.A.I.",
+            "properties": {
+              "saude_camera": { "type": "string", "enum": ["Boa", "Degradada", "Critica"] },
+              "tempo_estimado_manutencao": { "type": "string", "description": "Estimativa textual, ex: '48 horas', 'imediato'." },
+              "eficiencia_captura": { "type": "number", "description": "Percentual de 0 a 100." }
+            }
+          },
+          "acionar_dispersor_sonoro": {
+            "type": "boolean",
+            "description": "True quando leitura_sensor_proximidade indicar ave proxima e o sistema sonoro anti-aves deve ser acionado."
+          }
         }
       }
     },
