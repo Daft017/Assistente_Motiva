@@ -36,7 +36,7 @@ Recorte: B — Operação e Priorização de Campo
 ## 4. Ferramentas (Tools) Obrigatórias
 
 Conforme contrato em `tools/tools_spec.json`, o assistente poderá acionar:
-1. `consultar_alarme_tempo_real`
+1. `consultar_historico_tag`
 2. `classificar_falha_ambiental`
 3. `gerar_ordem_servico`
 4. `verificar_seguranca_epi`

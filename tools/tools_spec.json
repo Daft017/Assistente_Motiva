@@ -1,0 +1,140 @@
+{
+  "projeto": "engman-copilot",
+  "versao": "sprint1",
+  "recorte": "B - Operacao e Priorizacao de Campo",
+  "observacao": "Contrato de especificacao das tools. Nenhuma tool esta implementada nesta etapa; retornos sao mockados nas Sprints 03/04.",
+  "tools": [
+    {
+      "name": "consultar_historico_tag",
+      "description": "Busca o historico de falhas, manutencoes e boletins de ocorrencia registrados para um ativo identificado por TAG na base de conhecimento. Retorna apenas o que existe na base; nao deve ser usada para inventar historico.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "Identificador unico do ativo, ex: CAM-042, SEN-110, PMV-067."
+          },
+          "limite_registros": {
+            "type": "integer",
+            "description": "Numero maximo de registros de historico a retornar, do mais recente ao mais antigo.",
+            "default": 5
+          }
+        },
+        "required": ["tag"]
+      },
+      "retorno": {
+        "type": "object",
+        "properties": {
+          "tag_encontrado": { "type": "boolean" },
+          "registros": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "data": { "type": "string" },
+                "tipo_falha": { "type": "string" },
+                "acao_tomada": { "type": "string" },
+                "status": { "type": "string", "enum": ["Resolvido", "Pendente", "Em andamento"] }
+              }
+            }
+          },
+          "fonte": { "type": "string", "description": "Documento de origem, ex: Historico FSM" }
+        }
+      }
+    },
+    {
+      "name": "classificar_falha_ambiental",
+      "description": "Avalia um alarme recebido no CCO e classifica se e provavel falha real do ativo, condicao ambiental (chuva, cerracao, glare) ou indeterminado, cruzando o tipo de alarme com condicoes ambientais registradas e o historico do TAG.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "Identificador do ativo que disparou o alarme."
+          },
+          "tipo_alarme": {
+            "type": "string",
+            "description": "Descricao do alarme recebido, ex: perda de video, leitura inconsistente."
+          },
+          "condicao_ambiental_informada": {
+            "type": "string",
+            "enum": ["chuva", "cerracao", "glare", "nenhuma", "desconhecida"],
+            "description": "Condicao ambiental relatada no momento do alarme, se houver."
+          }
+        },
+        "required": ["tag", "tipo_alarme"]
+      },
+      "retorno": {
+        "type": "object",
+        "properties": {
+          "classificacao": { "type": "string", "enum": ["falha_real", "ambiental_indeterminado", "sem_informacao"] },
+          "justificativa": { "type": "string" },
+          "prioridade_sugerida": { "type": "string", "enum": ["Alta", "Media", "Baixa"] }
+        }
+      }
+    },
+    {
+      "name": "verificar_seguranca_epi",
+      "description": "Verifica se existe POP (Procedimento Operacional Padrao) cadastrado para o tipo de intervencao solicitada e retorna os EPIs obrigatorios antes de qualquer orientacao de campo ser fornecida. Deve ser chamada sempre que a solicitacao envolver intervencao fisica ou eletrica.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "tipo_intervencao": {
+            "type": "string",
+            "description": "Tipo de intervencao solicitada, ex: desligamento de gabinete, troca de lampada, ajuste de sensor."
+          },
+          "ativo_energizado": {
+            "type": "boolean",
+            "description": "Indica se o equipamento esta energizado no momento da solicitacao."
+          }
+        },
+        "required": ["tipo_intervencao", "ativo_energizado"]
+      },
+      "retorno": {
+        "type": "object",
+        "properties": {
+          "pop_encontrado": { "type": "boolean" },
+          "pop_referencia": { "type": "string", "description": "Ex: POP-02" },
+          "epis_obrigatorios": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "liberar_orientacao": {
+            "type": "boolean",
+            "description": "False se nao houver POP ou se exigir profissional qualificado NR-10/NR-35."
+          }
+        }
+      }
+    },
+    {
+      "name": "gerar_ordem_servico",
+      "description": "Monta o texto estruturado de uma Ordem de Servico com os campos obrigatorios definidos no POP-03, a partir dos dados ja coletados e classificados de um atendimento.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "tag": { "type": "string" },
+          "localizacao_km": { "type": "string" },
+          "tipo_intervencao": {
+            "type": "string",
+            "enum": ["corretiva", "preventiva", "inspecao", "CBM"]
+          },
+          "descricao_problema": { "type": "string" },
+          "prioridade": { "type": "string", "enum": ["Alta", "Media", "Baixa"] },
+          "epis_utilizados": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["tag", "localizacao_km", "tipo_intervencao", "descricao_problema", "prioridade"]
+      },
+      "retorno": {
+        "type": "object",
+        "properties": {
+          "numero_os": { "type": "string" },
+          "texto_os": { "type": "string" },
+          "data_abertura": { "type": "string" }
+        }
+      }
+    }
+  ]
+}
