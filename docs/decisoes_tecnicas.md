@@ -22,13 +22,14 @@ Recorte: B — Operação e Priorização de Campo
 | Critério | Pinecone | Chroma | FAISS |
 |----------|----------|--------|-------|
 | Tipo | Nuvem gerenciada | Local / leve | Local (Meta) |
-| Escalabilidade | Alta | Média | Alta (local) |
+| Escalabilidade | Alta (planos pagos) | Média | Alta (local) |
 | Facilidade de uso | Alta | Muito alta | Média |
-| Custo | Pagamento por uso | Gratuito (local) | Gratuito (local) |
+| Custo | **Gratuito** no plano Starter (2GB storage, sem cartão) — pago só acima disso | Gratuito (local) | Gratuito (local) |
+| Exige chave paga? | Não no plano Starter | Não | Não |
 | Persistência | Nuvem | Arquivo local | Arquivo local |
 | Recomendação | Avaliado | Selecionado para protótipo | Alternativa para produção local |
 
-**Decisão:** Chroma para o protótipo de RAG (Sprints 3 e 4), por ser leve, de fácil integração com Python e não exigir infraestrutura de nuvem imediata.
+**Decisão:** Chroma para o protótipo de RAG (Sprints 3 e 4), por ser leve, de fácil integração com Python e não exigir infraestrutura de nuvem imediata. Vale registrar que os 3 vector stores comparados têm caminho gratuito disponível (Pinecone via plano Starter permanente, Chroma e FAISS por rodarem localmente) — nenhum exige pagamento obrigatório nesta fase.
 
 ## 3. Trade-offs Finais
 
