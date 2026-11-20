@@ -4,6 +4,14 @@ Assistente de Inteligência Artificial Generativa para Engenharia de Manutençã
 
 **M.I.R.A.I** (Monitoramento Inteligente com Recuperação Autônoma de Imagem) é o ativo-piloto do engman-copilot: câmeras de CFTV equipadas com sensores embarcados (neblina, proximidade de aves/objetos) e um módulo de Computer Vision que monitora a própria qualidade de captura, prevê degradação e aciona manutenção — corretiva, preventiva ou autônoma (protótipos de troca de película e dupla lente com autolimpeza). O engman-copilot é a camada de IA que recebe os alertas gerados por essas câmeras (e pelos demais ativos ITS da via), confirma com a base de conhecimento, classifica, prioriza e organiza tudo para o Operador do CCO — funcionando como uma espécie de API de gestão de alarmes entre o hardware de campo e a decisão humana.
 
+## Integrantes
+
+- João Pedro Godoy — RM 575698 — Turma CCPB
+- Pedro Almeida Pimenta — RM 575312 — Turma CCPB
+- Gabriel de Paula Santa Izabel — RM 576143 — Turma CCPB
+- Victor Hugo Astorino — RM 575927 — Turma CCPB
+- Lucas Jorge Ferreira — RM 575223 — Turma CCPB
+
 ## Contexto Acadêmico
 
 - **Disciplina:** Prompt Engineering & Artificial Intelligence
